@@ -4,7 +4,7 @@
 //   const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${redirectUrl}`;
 //   location.assign(authUrl);
 // }
-import {JSO} from 'https://unpkg.com/jso/dist/jso.js';
+import {JSO} from 'https://unpkg.com/jso/dist/jso.js?module';
 
 const spotifyClient = new JSO({
   providerID: 'spotify',
