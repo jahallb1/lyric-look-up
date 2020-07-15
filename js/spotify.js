@@ -15,5 +15,8 @@ const spotifyClient = new jso.JSO({
 });
 
 document.querySelector('#req-spotify-token').addEventListener('click', () => {
-  spotifyClient.getToken().then(spotifyClient.callback());
+  spotifyClient.getToken().then((token) => {
+    spotifyClient.callback();
+    debugger;
+  });
 });
