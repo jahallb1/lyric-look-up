@@ -4,9 +4,9 @@
 //   const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${redirectUrl}`;
 //   location.assign(authUrl);
 // }
-import {JSO} from 'https://unpkg.com/jso/dist/jso.js?module';
+import jso from 'https://unpkg.com/jso/dist/jso.js';
 
-const spotifyClient = new JSO({
+const spotifyClient = new jso.JSO({
   providerID: 'spotify',
   client_id: 'dd7f3da7892d4f0b993617370f503172',
   redirect_uri: 'https://gminteer.github.io/proj1-test-space/',
