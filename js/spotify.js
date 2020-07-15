@@ -10,6 +10,7 @@ const spotifyClient = new jso.JSO({
   client_id: 'dd7f3da7892d4f0b993617370f503172',
   redirect_uri: 'https://gminteer.github.io/proj1-test-space/',
   authorization: 'https://accounts.spotify.com/authorize',
+  response_type: 'token',
   debug: true, // turn me off later
 });
 
