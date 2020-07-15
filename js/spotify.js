@@ -15,4 +15,4 @@ const spotifyClient = new jso.JSO({
 
 document.querySelector('#req-spotify-token').addEventListener('click', () => {
   spotifyClient.getToken().then(spotifyClient.callback());
-};
+});
