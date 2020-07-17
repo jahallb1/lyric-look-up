@@ -1,7 +1,3 @@
-# project-1
+# <div align="center">"Lyrics Look-Up"</div>
 
-# TODO
-
-- Write TODO list.
-- Plan out project.
-- Write project.
+## ![](/images/image1.png)
