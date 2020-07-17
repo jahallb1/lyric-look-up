@@ -17,6 +17,7 @@ import {DateTime} from './luxon.js';
  * - Initialize with providerConfig information
  * - Invoke instance.getAccessCode() when ready for the redirect to the provider
  * - Invoke instance.getAccessToken() after the provider has redirected back
+ * - Use instance.fetch() instead of the built-in fetch() to automatically apply authorization headers
  */
 class PkceHandler {
   /**
@@ -53,7 +54,7 @@ class PkceHandler {
         this.tokenData = providerState;
         if (autoRefresh) {
           this.autoRefreshTimeOut = setTimeout(
-            this.refreshToken,
+            this.refreshToken.bind(this),
             providerState.expiration.diff(now).as('milliseconds')
           );
         }
@@ -64,7 +65,7 @@ class PkceHandler {
    * Generates a cryptographically sound random 64 character long string using the subset
    * of characters that are valid in OAuth2 PKCE Code Verifiers (a-z, A-z, 0-9, and "-._~")
    *
-   * @param {integer} length how long the string should be (code verifiers should be 43-128 characters long)
+   * @param {integer} [length] how long the string should be (code verifiers should be 43-128 characters long), default 64
    * @return {string} a randomly generated PKCE Code Verifier
    */
   _generateCryptoRandomString(length = 64) {
@@ -91,25 +92,34 @@ class PkceHandler {
     hashString = btoa(hashString).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+/m, '');
     return hashString;
   }
-
+  /**
+   * Stores the returned authorization token on the object and in localStorage
+   *
+   * @param {Object} data the JSON object from a requestToken/refreshToken request
+   */
   _applyToken(data) {
     this.tokenData = {
       accessToken: data.access_token,
       refreshToken: data.refresh_token,
       tokenType: data.token_type,
-      expiration: DateTime.local().plus({seconds: data.expires_in}),
+      expiration: DateTime.local().plus({seconds: data.expires_in - 30}), // refresh a bit early because the refresh token expires at the same time
       scope: data.scope,
     };
     if (this.autoRefresh) {
-      const timeOutVal = (data.expires_in - 30) * 1000;
-      this.autoRefreshTimeOut = setTimeout(this.refreshToken, timeOutVal);
+      this.autoRefreshTimeOut = setTimeout(
+        this.refreshToken.bind(this),
+        this.tokenData.expiration.diffNow().as('milliseconds')
+      );
     }
+
     // update dataStash
     if (this.providerName) this._dataStash[this.providerName] = this.tokenData;
     else this._dataStash = this.tokenData;
     localStorage.setItem(this.storageKey, JSON.stringify(this._dataStash));
   }
-
+  /**
+   * Requests an authorization code from the provider. This will change the window location to the provider's authorization URL, which will WIPE OUT ANY STATE that hasn't been saved to localStorage!!!
+   */
   async requestCode() {
     for (const key of Object.keys(this.providerConfig))
       if (key !== 'scope' && !this.providerConfig[key]) throw new TypeError('PkceHandler: missing OAuth configuration');
@@ -117,17 +127,17 @@ class PkceHandler {
     const codeVerifier = this._generateCryptoRandomString();
     const challenge = await this._generateBase64UrlEncodedHash(codeVerifier);
 
-    const c = this.providerConfig;
+    const cfg = this.providerConfig;
     let codeReqUrl =
-      `${c.authorizationUrl}?response_type=code` +
-      `&client_id=${c.clientId}` +
-      `&redirect_uri=${c.redirectUrl}` +
+      `${cfg.authorizationUrl}?response_type=code` +
+      `&client_id=${cfg.clientId}` +
+      `&redirect_uri=${cfg.redirectUrl}` +
       `&state=${state}` +
       `&code_challenge=${challenge}` +
       `&code_challenge_method=S256`;
-    if (c.scope) codeReqUrl += `&scope=${c.scope}`;
+    if (cfg.scope) codeReqUrl += `&scope=${cfg.scope}`;
     // stash providerState in localStorage since it won't survive the redirect
-    const providerState = {state, codeVerifier, challenge, sentCodeReq: true};
+    const providerState = {state, codeVerifier, sentCodeReq: true};
     let dataStash = localStorage.getItem(this.storageKey);
     if (this.providerName) {
       if (dataStash) {
@@ -143,6 +153,11 @@ class PkceHandler {
     location.assign(codeReqUrl);
   }
 
+  /**
+   * Requests an authorization token from the provider
+   *
+   * @param {Object} providerResponse A javascript object version of the search parameters from the authorization code request redirect
+   */
   async requestToken(providerResponse) {
     const providerState = this.providerName ? this._dataStash[this.providerName] : this._dataStash;
     if (!providerState || !providerState.sentCodeReq) throw new TypeError('PkceHandler: invalid provider state');
@@ -164,7 +179,9 @@ class PkceHandler {
     const data = await response.json();
     this._applyToken(data);
   }
-
+  /**
+   * Refreshes the authorization token from the provider
+   */
   async refreshToken() {
     console.debug(`refreshed token at ${DateTime.local().toLocaleString()}`);
     const body = new URLSearchParams();
@@ -177,6 +194,13 @@ class PkceHandler {
     const data = await response.json();
     this._applyToken(data);
   }
+  /**
+   * A wrapper around the built-in fetch() function that adds Authorization & Content-Type headers
+   *
+   * @param {string} url The URL to fetch
+   * @param {Object} [request] A fetch options object (optional)
+   * @return {Promise} Returns the promise from the built-in fetch()
+   */
   fetch(url, request = {}) {
     if (!request.headers) request.headers = {};
     request.headers.Authorization = `${this.tokenData.tokenType} ${this.tokenData.accessToken}`;

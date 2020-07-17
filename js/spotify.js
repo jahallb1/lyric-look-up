@@ -13,10 +13,20 @@ window.spotifyClient = new PkceHandler(
   },
   'spotifyTest'
 );
-function reqSpotifyToken() {
-  spotifyClient.requestCode();
-}
-document.querySelector('#access-spotify').addEventListener('click', reqSpotifyToken);
+
+spotifyClient.getCurrentTrackInfo = async () => {
+  const response = await spotifyClient.fetch('https://api.spotify.com/v1/me/player/currently-playing');
+  if (response.ok) {
+    if (response.status === 204) {
+      return {artist: '(not currently playing a song)', track: '', album: ''};
+    } else {
+      const data = await response.json();
+      return {artist: data.item.artists[0].name, track: data.item.name, album: data.item.album.name};
+    }
+  }
+};
+
+document.querySelector('#access-spotify').addEventListener('click', spotifyClient.requestCode.bind(spotifyClient));
 
 const search = window.location.href.split('?')[1];
 if (search) {
@@ -34,15 +44,3 @@ if (search) {
     }
   }
 }
-
-spotifyClient.getCurrentTrackInfo = async () => {
-  const response = await spotifyClient.fetch('https://api.spotify.com/v1/me/player/currently-playing');
-  if (response.ok) {
-    if (response.status === 204) {
-      return {artist: '(not currently playing a song)', track: '', album: ''};
-    } else {
-      const data = await response.json();
-      return {artist: data.item.artists[0].name, track: data.item.name, album: data.item.album.name};
-    }
-  }
-};
