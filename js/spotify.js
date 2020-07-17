@@ -1,34 +1,15 @@
-// function getAuthToken() {
-//   const clientId = 'dd7f3da7892d4f0b993617370f503172'; // not actually a secret
-//   const redirectUrl = 'https://gminteer.github.io/proj1-test-space/';
-//   const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${redirectUrl}`;
-//   location.assign(authUrl);
-// }
-import {PkceHandler} from './pkce-oauth.js';
+/* global spotifyClient */
+import {PkceHandler} from './lib/pkce-handler.js';
 
-// const spotifyClient = new jso.JSO({
-//   providerID: 'spotify',
-//   client_id: 'dd7f3da7892d4f0b993617370f503172',
-//   redirect_uri: 'https://gminteer.github.io/proj1-test-space/',
-//   authorization: 'https://accounts.spotify.com/authorize',
-//   response_type: 'token',
-//   debug: true, // turn me off later
-// });
-
-// document.querySelector('#req-spotify-token').addEventListener('click', () => {
-//   spotifyClient.getToken().then((token) => {
-//     spotifyClient.callback();
-//     debugger;
-//   });
-// });
-
-const spotifyClient = new PkceHandler(
+// assigning to window to make it easier to test/debug, remember to change later.
+window.spotifyClient = new PkceHandler(
   {
     clientId: 'dd7f3da7892d4f0b993617370f503172',
-    redirectUrl: 'https://gminteer.github.io/proj1-test-space/',
+    redirectUrl: 'http://127.0.0.1:5500/index.html',
+    // redirectUrl: 'https://gminteer.github.io/proj1-test-space/',
     authorizationUrl: 'https://accounts.spotify.com/authorize',
     tokenUrl: 'https://accounts.spotify.com/api/token',
-    scope: '',
+    scope: 'user-read-playback-state',
   },
   'spotifyTest'
 );
@@ -53,3 +34,15 @@ if (search) {
     }
   }
 }
+
+spotifyClient.getCurrentTrackInfo = async () => {
+  const response = await spotifyClient.fetch('https://api.spotify.com/v1/me/player/currently-playing');
+  if (response.ok) {
+    if (response.status === 204) {
+      return {artist: '(not currently playing a song)', track: '', album: ''};
+    } else {
+      const data = await response.json();
+      return {artist: data.item.artists[0].name, track: data.item.name, album: data.item.album.name};
+    }
+  }
+};

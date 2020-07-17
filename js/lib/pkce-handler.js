@@ -1,5 +1,6 @@
-// adapted from https://github.com/aaronpk/pkce-vanilla-js/blob/master/index.html
+// adapted from the docs on https://oauth.net/, the spotify dev guide, and https://github.com/aaronpk/pkce-vanilla-js/blob/master/index.html
 
+import {DateTime} from './luxon.js';
 /**
  * @typedef OAuthConfig OAuth configuration details
  * @type {object}
@@ -22,8 +23,9 @@ class PkceHandler {
    * @param {OAuthConfig} [providerConfig] OAuth configuration details - can be set after initialization.
    * @param {string} [providerName] The name of the OAuth provider, used to name the child object in PkceHandler's localStorage key - can be anything, needs to be set if multiple instances of PkceHandler will be used simultaneously. If not set state will be stored directly in localStorage[storageKey].
    * @param {string} [storageKey] The localStorage key to use to store PkceHandler's state, defaults to 'PkceHandler'
+   * @param {boolean} [autoRefresh] Whether or not PkceHandler should automatically try to refresh its access token, default is True.
    */
-  constructor(providerConfig = null, providerName = null, storageKey = 'PkceHandler') {
+  constructor(providerConfig = null, providerName = null, storageKey = 'PkceHandler', autoRefresh = true) {
     if (!providerConfig) {
       /** type {OAuthConfig} */
       this.providerConfig = {
@@ -37,6 +39,25 @@ class PkceHandler {
       this.providerConfig = providerConfig;
       this.providerName = providerName;
       this.storageKey = storageKey;
+      this.autoRefresh = autoRefresh;
+    }
+    // check to see if we already have a valid token in localStorage
+    const dataStashRaw = localStorage.getItem(storageKey);
+    if (!dataStashRaw) return;
+    this._dataStash = JSON.parse(dataStashRaw);
+    const providerState = providerName ? this._dataStash[providerName] : this._dataStash;
+    if (Object.keys(providerState).includes('accessToken')) {
+      providerState.expiration = DateTime.fromISO(providerState.expiration);
+      const now = DateTime.local();
+      if (now < providerState.expiration) {
+        this.tokenData = providerState;
+        if (autoRefresh) {
+          this.autoRefreshTimeOut = setTimeout(
+            this.refreshToken,
+            providerState.expiration.diff(now).as('milliseconds')
+          );
+        }
+      }
     }
   }
   /**
@@ -71,6 +92,24 @@ class PkceHandler {
     return hashString;
   }
 
+  _applyToken(data) {
+    this.tokenData = {
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+      tokenType: data.token_type,
+      expiration: DateTime.local().plus({seconds: data.expires_in}),
+      scope: data.scope,
+    };
+    if (this.autoRefresh) {
+      const timeOutVal = (data.expires_in - 30) * 1000;
+      this.autoRefreshTimeOut = setTimeout(this.refreshToken, timeOutVal);
+    }
+    // update dataStash
+    if (this.providerName) this._dataStash[this.providerName] = this.tokenData;
+    else this._dataStash = this.tokenData;
+    localStorage.setItem(this.storageKey, JSON.stringify(this._dataStash));
+  }
+
   async requestCode() {
     for (const key of Object.keys(this.providerConfig))
       if (key !== 'scope' && !this.providerConfig[key]) throw new TypeError('PkceHandler: missing OAuth configuration');
@@ -87,41 +126,62 @@ class PkceHandler {
       `&code_challenge=${challenge}` +
       `&code_challenge_method=S256`;
     if (c.scope) codeReqUrl += `&scope=${c.scope}`;
-    const pkceProviderState = {state, codeVerifier, challenge, sentCodeReq: true};
-    const storageObject = this.providerName ? {[this.providerName]: pkceProviderState} : pkceProviderState;
-    localStorage.setItem(this.storageKey, JSON.stringify(storageObject));
+    // stash providerState in localStorage since it won't survive the redirect
+    const providerState = {state, codeVerifier, challenge, sentCodeReq: true};
+    let dataStash = localStorage.getItem(this.storageKey);
+    if (this.providerName) {
+      if (dataStash) {
+        dataStash = JSON.parse(dataStash);
+        dataStash[this.providerName] = providerState;
+      } else {
+        dataStash = {[this.providerName]: providerState};
+      }
+    } else {
+      dataStash = providerState;
+    }
+    localStorage.setItem(this.storageKey, JSON.stringify(dataStash));
     location.assign(codeReqUrl);
   }
 
   async requestToken(providerResponse) {
-    const pkceProviderState = this.providerName
-      ? JSON.parse(localStorage.getItem(this.storageKey))[this.providerName]
-      : JSON.parse(localStorage.getItem(this.storageKey));
-    if (!pkceProviderState || !pkceProviderState.sentCodeReq)
-      throw new TypeError('PkceHandler: invalid provider state');
-    if (providerResponse.state !== pkceProviderState.state) {
+    const providerState = this.providerName ? this._dataStash[this.providerName] : this._dataStash;
+    if (!providerState || !providerState.sentCodeReq) throw new TypeError('PkceHandler: invalid provider state');
+    if (providerResponse.state !== providerState.state) {
       throw new Error(
         'PkceHandler: state value from provider does not match local state. POSSIBLE CROSS-SITE REQUEST FORGERY!'
       );
     }
     const c = this.providerConfig;
-    const body = new URLSearchParams();
+    const body = new URLSearchParams(); // URLSearchParams object as post body = x-www-form-urlencoded, which is what the provider wants
     body.append('client_id', c.clientId);
     body.append('grant_type', 'authorization_code');
     body.append('code', providerResponse.code);
     body.append('redirect_uri', c.redirectUrl);
-    body.append('code_verifier', pkceProviderState.codeVerifier);
-    const req = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body,
-    };
+    body.append('code_verifier', providerState.codeVerifier);
+    const req = {method: 'POST', body};
     const response = await fetch(c.tokenUrl, req);
     if (!response.ok) throw new Error(response.statusText);
     const data = await response.json();
-    debugger;
+    this._applyToken(data);
+  }
+
+  async refreshToken() {
+    console.debug(`refreshed token at ${DateTime.local().toLocaleString()}`);
+    const body = new URLSearchParams();
+    body.append('grant_type', 'refresh_token');
+    body.append('refresh_token', this.tokenData.refreshToken);
+    body.append('client_id', this.providerConfig.clientId);
+    const req = {method: 'POST', body};
+    const response = await fetch(this.providerConfig.tokenUrl, req);
+    if (!response.ok) throw new Error(response.statusText);
+    const data = await response.json();
+    this._applyToken(data);
+  }
+  fetch(url, request = {}) {
+    if (!request.headers) request.headers = {};
+    request.headers.Authorization = `${this.tokenData.tokenType} ${this.tokenData.accessToken}`;
+    request.headers['Content-Type'] = 'application/json';
+    return fetch(url, request);
   }
 }
 
