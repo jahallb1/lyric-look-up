@@ -9,5 +9,7 @@
 
 <div align="left">Lyric Look-Up is a website that allows users to populate lyrics based on their Spotify Playlist.</div>
 
-![](/images/spotify.png | width=100)
+
+
+![](/images/spotify.png)
 
