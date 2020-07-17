@@ -10,8 +10,8 @@ async function getCurrentTrackInfo() {
     } else {
       const data = await response.json();
       if (data.currently_playing_type === 'ad') return {error: 'ad'};
-      // 50ms offset to timeRemaining as a kludge
-      const timeRemaining = data.progress_ms ? data.item.duration_ms - data.progress_ms + 50 : data.item.duration_ms;
+      // 150ms offset to timeRemaining as a kludge
+      const timeRemaining = data.progress_ms ? data.item.duration_ms - data.progress_ms + 150 : data.item.duration_ms;
       const artists = [];
       for (const artist of data.item.artists) artists.push(artist.name);
       return {artists, track: data.item.name, album: data.item.album.name, timeRemaining};
@@ -37,7 +37,7 @@ async function currentTrackStream() {
       if (i < currentTrack.artists.length - 1) artistsAsString += `${currentTrack.artists[i]}, `;
       else artistsAsString += currentTrack.artists[i];
     }
-    console.log(`Currently playing: "${currentTrack.track}" by ${artistsAsString} (from ${currentTrack.album})`);
+    console.log(`Currently playing: "${currentTrack.track}" by ${artistsAsString} (from "${currentTrack.album}")`);
     console.debug(`Next poll happens in ${Duration.fromMillis(currentTrack.timeRemaining).as('seconds')}s`);
     setTimeout(() => {
       console.debug(`Track stream poll at ${DateTime.local().toLocaleString(DateTime.DATETIME_SHORT)}`);

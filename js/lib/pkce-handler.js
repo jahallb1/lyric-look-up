@@ -59,7 +59,7 @@ class PkceHandler {
             providerState.expiration.diff(now).as('milliseconds')
           );
         }
-        // custom events are synchronous
+        // synthetic events are synchronous
         setTimeout(() => {
           document.body.dispatchEvent(this.authorizedEvent);
         }, 10);
