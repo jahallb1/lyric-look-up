@@ -14,7 +14,7 @@ const getCurrentTrackInfo = async () => {
         return {error: 'ad'};
       }
       // adding a 10ms offset to timeRemaining as a kludge
-      const timeRemaining = data.progress_ms ? data.item.duration_ms - (data.progress_ms + 10) : data.item.duration_ms;
+      const timeRemaining = data.progress_ms ? data.item.duration_ms - (data.progress_ms - 10) : data.item.duration_ms;
       return {artist: data.item.artists[0].name, track: data.item.name, album: data.item.album.name, timeRemaining};
     }
   }
