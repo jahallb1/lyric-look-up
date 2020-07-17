@@ -183,7 +183,9 @@ class PkceHandler {
     if (!response.ok) throw new Error(response.statusText);
     const data = await response.json();
     this._applyToken(data);
-    document.body.dispatchEvent(this.authorizedEvent);
+    setTimeout(() => {
+      document.body.dispatchEvent(this.authorizedEvent);
+    }, 10);
   }
   /**
    * Refreshes the authorization token from the provider

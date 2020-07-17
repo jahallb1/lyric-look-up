@@ -2,6 +2,10 @@
 import {PkceHandler} from './lib/pkce-handler.js';
 import {DateTime, Duration} from './lib/luxon.js';
 
+function trackChangeEvent(trackInfo) {
+  setTimeout(document.body.dispatchEvent(new CustomEvent('trackChange', {bubbles: true, detail: trackInfo})), 10);
+}
+
 async function getCurrentTrackInfo() {
   const response = await spotifyClient.fetch('https://api.spotify.com/v1/me/player/currently-playing');
   if (response.ok) {
@@ -21,8 +25,8 @@ async function getCurrentTrackInfo() {
 
 async function currentTrackStream() {
   const currentTrack = await getCurrentTrackInfo();
+  trackChangeEvent(currentTrack);
   if (Object.keys(currentTrack).includes('error')) {
-    console.log(`No current song: "${currentTrack.error}"`);
     let nextPoll = null;
     if (currentTrack.error === 'ad') nextPoll = 1000 * 30;
     else nextPoll = 1000 * 60;
@@ -32,12 +36,6 @@ async function currentTrackStream() {
       currentTrackStream();
     }, nextPoll);
   } else {
-    let artistsAsString = '';
-    for (let i = 0; i < currentTrack.artists.length; i++) {
-      if (i < currentTrack.artists.length - 1) artistsAsString += `${currentTrack.artists[i]}, `;
-      else artistsAsString += currentTrack.artists[i];
-    }
-    console.log(`Currently playing: "${currentTrack.track}" by ${artistsAsString} (from "${currentTrack.album}")`);
     console.debug(`Next poll happens in ${Duration.fromMillis(currentTrack.timeRemaining).as('seconds')}s`);
     setTimeout(() => {
       console.debug(`Track stream poll at ${DateTime.local().toLocaleString(DateTime.DATETIME_SHORT)}`);
@@ -49,6 +47,19 @@ async function currentTrackStream() {
 document.body.addEventListener('authorized', (event) => {
   console.debug(`provider "${event.detail.provider}" authorized`);
   currentTrackStream();
+});
+
+document.body.addEventListener('trackChange', (event) => {
+  if (Object.keys(event.detail).includes('error')) {
+    console.log(`No current song: "${event.detail.error}"`);
+  } else {
+    let artistsAsString = '';
+    for (let i = 0; i < event.detail.artists.length; i++) {
+      if (i < event.detail.artists.length - 1) artistsAsString += `${event.detail.artists[i]}, `;
+      else artistsAsString += event.detail.artists[i];
+    }
+    console.log(`Currently playing: "${event.detail.track}" by ${artistsAsString} (from "${event.detail.album}")`);
+  }
 });
 
 // assigning to window to make it easier to test/debug, remember to change later.
