@@ -1,4 +1,4 @@
-# project-1
+# Project-1 ("Restaurant Look-Up")
 
 # TODO
 
