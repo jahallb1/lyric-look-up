@@ -18,9 +18,10 @@ spotifyClient.getCurrentTrackInfo = async () => {
   const response = await spotifyClient.fetch('https://api.spotify.com/v1/me/player/currently-playing');
   if (response.ok) {
     if (response.status === 204) {
-      return {artist: '(not currently playing a song)', track: '', album: ''};
+      return {error: 'nothing playing'};
     } else {
       const data = await response.json();
+      if (data.currently_playing_type === 'ad') return {error: 'ad'};
       return {artist: data.item.artists[0].name, track: data.item.name, album: data.item.album.name};
     }
   }

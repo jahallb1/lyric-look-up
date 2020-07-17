@@ -80,7 +80,7 @@ class PkceHandler {
    * Calculates the Base64 URL encoded SHA-256 hash of an input string
    *
    * @param {string} data the string to hash
-   * @return {string} the Base64 URL encoded SHA-256 hash of the string
+   * @return {string} the Base64 URL encoded SHA-256 hash
    */
   async _generateBase64UrlEncodedHash(data) {
     const encoder = new TextEncoder();
