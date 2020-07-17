@@ -1,8 +1,26 @@
 /* global spotifyClient */
 import {PkceHandler} from './lib/pkce-handler.js';
-import {Duration} from './lib/luxon.js';
+import {DateTime, Duration} from './lib/luxon.js';
 
-async function currentTrackStream() {
+const getCurrentTrackInfo = async () => {
+  const response = await spotifyClient.fetch('https://api.spotify.com/v1/me/player/currently-playing');
+  if (response.ok) {
+    if (response.status === 204) {
+      return {error: 'not_playing'};
+    } else {
+      const data = await response.json();
+      if (data.currently_playing_type === 'ad') {
+        console.log(data);
+        return {error: 'ad'};
+      }
+      // adding a 10ms offset to timeRemaining as a kludge
+      const timeRemaining = data.progress_ms ? data.item.duration_ms - (data.progress_ms + 10) : data.item.duration_ms;
+      return {artist: data.item.artists[0].name, track: data.item.name, album: data.item.album.name, timeRemaining};
+    }
+  }
+};
+
+const currentTrackStream = async () => {
   const currentTrack = await getCurrentTrackInfo();
   if (Object.keys(currentTrack).includes('error')) {
     console.log(`No current song: "${currentTrack.error}"`);
@@ -10,16 +28,23 @@ async function currentTrackStream() {
     if (currentTrack.error === 'ad') nextPoll = 1000 * 30;
     else nextPoll = 1000 * 60;
     console.debug(`Next poll happens in ${Duration.fromMillis(nextPoll).as('seconds')}s`);
+    setTimeout(() => {
+      console.debug(`Track stream poll at ${DateTime.local().toLocaleString(DateTime.DATETIME_SHORT)}`);
+      currentTrackStream();
+    }, nextPoll);
   } else {
     console.log(`Currently playing: "${currentTrack.track}" by ${currentTrack.artist} (from ${currentTrack.album})`);
     console.debug(`Next poll happens in ${Duration.fromMillis(currentTrack.timeRemaining).as('seconds')}s`);
-    setTimeout(spotifyClient.currentTrackStream, currentTrack.timeRemaining);
+    setTimeout(() => {
+      console.debug(`Track stream poll at ${DateTime.local().toLocaleString(DateTime.DATETIME_SHORT)}`);
+      currentTrackStream();
+    }, currentTrack.timeRemaining);
   }
-}
+};
 
 // this has a 50-50 shot of working, I think there's a weird race condition happening depending on the order async events happen.
 document.body.addEventListener('authorized', (event) => {
-  console.log(`provider "${event.detail.provider}" authorized`);
+  console.debug(`provider "${event.detail.provider}" authorized`);
   currentTrackStream();
 });
 
@@ -35,24 +60,8 @@ window.spotifyClient = new PkceHandler(
   },
   'spotifyTest'
 );
-
-async function getCurrentTrackInfo() {
-  const response = await spotifyClient.fetch('https://api.spotify.com/v1/me/player/currently-playing');
-  if (response.ok) {
-    if (response.status === 204) {
-      return {error: 'not_playing'};
-    } else {
-      const data = await response.json();
-      if (data.currently_playing_type === 'ad') {
-        console.log(data);
-        return {error: 'ad'};
-      }
-      // adding a 10ms offset to timeRemaining as a kludge
-      const timeRemaining = data.progress_ms ? data.item.duration_ms - (data.progress_ms - 10) : data.item.duration_ms;
-      return {artist: data.item.artists[0].name, track: data.item.name, album: data.item.album.name, timeRemaining};
-    }
-  }
-}
+spotifyClient.getCurrentTrackInfo = getCurrentTrackInfo;
+spotifyClient.currentTrackStream = currentTrackStream;
 
 document.querySelector('#access-spotify').addEventListener('click', spotifyClient.requestCode.bind(spotifyClient));
 

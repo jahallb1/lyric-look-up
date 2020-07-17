@@ -59,7 +59,10 @@ class PkceHandler {
             providerState.expiration.diff(now).as('milliseconds')
           );
         }
-        document.body.dispatchEvent(this.authorizedEvent);
+        // custom events are synchronous
+        setTimeout(() => {
+          document.body.dispatchEvent(this.authorizedEvent);
+        }, 10);
       }
     }
   }
@@ -186,7 +189,7 @@ class PkceHandler {
    * Refreshes the authorization token from the provider
    */
   async refreshToken() {
-    console.debug(`refreshed token at ${DateTime.local().toLocaleString()}`);
+    console.debug(`refreshed token at ${DateTime.local().toLocaleString(DateTime.DATETIME_SHORT)}`);
     const body = new URLSearchParams();
     body.append('grant_type', 'refresh_token');
     body.append('refresh_token', this.tokenData.refreshToken);
