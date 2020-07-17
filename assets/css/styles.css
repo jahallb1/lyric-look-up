@@ -4,12 +4,15 @@ html  {
     background-size: cover;
     background-position: center center;
     font-family: 'Roboto',sans-serif;
+
+    
     
     
 }
 
 .box {
     opacity: .9;
+    margin-top: 20%;
 
 }
 
@@ -26,8 +29,11 @@ html  {
 }
 
 .button {
-    padding: ;
+    padding-right: 20%;
+    padding-left: 20;
+    margin-left: 10%;
 }
     
+
 
   
