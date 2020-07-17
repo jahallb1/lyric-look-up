@@ -41,6 +41,7 @@ class PkceHandler {
       this.providerName = providerName;
       this.storageKey = storageKey;
       this.autoRefresh = autoRefresh;
+      this.authorizedEvent = new CustomEvent('authorized', {bubbles: true, detail: {provider: providerName}});
     }
     // check to see if we already have a valid token in localStorage
     const dataStashRaw = localStorage.getItem(storageKey);
@@ -58,6 +59,7 @@ class PkceHandler {
             providerState.expiration.diff(now).as('milliseconds')
           );
         }
+        document.body.dispatchEvent(this.authorizedEvent);
       }
     }
   }
@@ -178,6 +180,7 @@ class PkceHandler {
     if (!response.ok) throw new Error(response.statusText);
     const data = await response.json();
     this._applyToken(data);
+    document.body.dispatchEvent(this.authorizedEvent);
   }
   /**
    * Refreshes the authorization token from the provider
