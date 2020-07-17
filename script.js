@@ -1,16 +1,21 @@
 const apiAddress = "";
 const apiKey = "";
 const apiArtist = "";
-let resturantSearchEl = document.querySelector("search-button");
+let musicSearchEl = document.querySelector("#search-button");
 
-$(".search-button").on("click", function (){
+musicSearchEl.onclick = function (){
     getArtistApi();
-});
+    let songTitle = document.getElementById("song").value;
+    console.log(songTitle);
+    console.log("this");
+};
 
 function getArtistApi() {
     let api = apiAddress + apiKey
     event.preventDefault();
-    fetch("https://canarado-lyrics.p.rapidapi.com/lyrics/zenith%2520denzel%2520curry", {
+    let songTitle = document.getElementById("song").value;
+    console.log(songTitle);
+    fetch("https://canarado-lyrics.p.rapidapi.com/lyrics/" + songTitle, {
         "method": "GET",
         "headers": {
             "x-rapidapi-host": "canarado-lyrics.p.rapidapi.com",
