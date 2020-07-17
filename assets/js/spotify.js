@@ -55,7 +55,8 @@ document.body.addEventListener('authorized', (event) => {
 window.spotifyClient = new PkceHandler(
   {
     clientId: 'dd7f3da7892d4f0b993617370f503172',
-    redirectUrl: 'http://127.0.0.1:5500/index.html',
+    redirectUrl: 'https://mayorgak.github.io/project-1/',
+    // redirectUrl: 'http://127.0.0.1:5500/index.html',
     // redirectUrl: 'https://gminteer.github.io/proj1-test-space/',
     authorizationUrl: 'https://accounts.spotify.com/authorize',
     tokenUrl: 'https://accounts.spotify.com/api/token',
