@@ -16,7 +16,7 @@ document.body.addEventListener('trackChange', (event) => {
     } else {
         getArtistApi(event);
       }
-    });
+    });  
 
 function getArtistApi(event) {
     let artistsAsString = '';
