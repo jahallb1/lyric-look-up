@@ -3,14 +3,26 @@ const apiKey = "";
 const apiArtist = "";
 let musicSearchEl = document.querySelector("#search-button");
 
-musicSearchEl.onclick = function (){
-    getArtistApi();
-    let songTitle = document.getElementById("song").value;
-    console.log(songTitle);
-    console.log("this");
-};
+//  musicSearchEl.onclick = function (){
+//     getArtistApi();
+//     let songTitle = document.getElementById("song").value;
+//     console.log(songTitle);
+//     console.log("this");
+// };
 
-function getArtistApi() {
+document.body.addEventListener('trackChange', (event) => {
+    if (Object.keys(event.detail).includes('error')) {
+      console.log(`No current song: "${event.detail.error}"`);
+    } else {
+        getArtistApi(event);
+      }
+    });
+
+function getArtistApi(event) {
+    let artistsAsString = '';
+          for (let i = 0; i < event.detail.artists.length; i++) {
+            if (i < event.detail.artists.length - 1) artistsAsString += `${event.detail.artists[i]}, `;
+            else artistsAsString += event.detail.artists[i];}
     let api = apiAddress + apiKey
     event.preventDefault();
     let songTitle = document.getElementById("song").value;
@@ -28,13 +40,15 @@ function getArtistApi() {
 
             })
         }
-    }
+    })
+}
     
 
-    )}
+      
+
+   
 // clicked feature to search
 // call api from Genius 
 // parse info
 // display data to the site
-
 
