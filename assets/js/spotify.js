@@ -22,9 +22,7 @@ const toast = (message, type, position = 'top-center', duration = 6000) =>
     animate: {in: 'fadeIn', out: 'fadeOut'},
   });
 
-// HTML element hooks
 const spotifyBtn = document.querySelector('#access-spotify');
-const spotifyBtnLabel = document.querySelector('#access-spotify .button-title');
 const nowPlayingDiv = document.querySelector('.now-playing');
 
 // module globals
@@ -127,7 +125,7 @@ document.body.addEventListener('authorized', (event) => {
   // re-wire "connect to Spotify" button to be "re-sync with Spotify"
   spotifyBtn.removeEventListener('click', spotifyAuthRequest);
   spotifyBtn.addEventListener('click', () => streamCurrentTrackInfo(false));
-  spotifyBtnLabel.textContent = 'Resync with Spotify';
+  spotifyBtn.querySelector('.button-title').textContent = 'Resync with Spotify';
 });
 
 document.body.addEventListener('trackChange', (event) => {
