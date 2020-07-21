@@ -11,9 +11,11 @@
 <br>
 
 >## Usage
-1. Useful example of how our product is used
+1. [https://mayorgak.github.io/project-1/](https://mayorgak.github.io/project-1/)
 
-2. Code block example?
+2. Useful example of how our product is used
+
+3. Code block example?
 <br> 
 
 >## Development
