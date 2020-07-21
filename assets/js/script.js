@@ -27,7 +27,6 @@ function getArtistApi(event) {
     //let api = apiAddress + apiKey
     event.preventDefault();
     //let songTitle = document.getElementById("song").value;
-    console.log(songTitle);
     fetch("https://canarado-lyrics.p.rapidapi.com/lyrics/" + artistsAsString + "" + event.song.title, {
         "method": "GET",
         "headers": {
