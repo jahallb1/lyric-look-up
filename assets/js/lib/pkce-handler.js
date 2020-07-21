@@ -60,9 +60,7 @@ class PkceHandler {
           );
         }
         // synthetic events are synchronous
-        setTimeout(() => {
-          document.body.dispatchEvent(this.authorizedEvent);
-        }, 10);
+        setTimeout(() => document.body.dispatchEvent(this.authorizedEvent), 10);
       }
     }
   }
