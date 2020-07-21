@@ -84,7 +84,7 @@ async function streamCurrentTrackInfo(doTimeoutPoll = false) {
     lastTrack = currentTrack;
     nextPoll = currentTrack.timeRemaining;
   }
-  if (doTimeoutPoll) {
+  if (doTimeoutPoll && nextPoll) {
     setTimeout(() => {
       streamCurrentTrackInfo(true);
     }, nextPoll);
@@ -111,6 +111,7 @@ function spotifyAuthRequest() {
   try {
     spotifyClient.requestCode.bind(spotifyClient)();
   } catch (error) {
+    // proper error handling
     toast(`Error: "${error}" when attemping to connect to Spotify.`, 'is-danger');
   }
 }
