@@ -2,6 +2,7 @@ const apiAddress = "";
 const apiKey = "";
 const apiArtist = "";
 let musicSearchEl = document.querySelector("#search-button");
+const musicContainer = document.querySelector(".lyrics-container");
 
 //  musicSearchEl.onclick = function (){
 //     getArtistApi();
@@ -41,6 +42,15 @@ function getArtistApi(event) {
             })
         }
     })
+}
+
+function displayLyrics() {
+    let lyrics = data.content[i];
+
+    let lyricsEl = document.createElement("p");
+    lyricsEl.textContent = lyrics;
+    musicContainer.appendChild(lyricsEl);
+
 }
     
 
