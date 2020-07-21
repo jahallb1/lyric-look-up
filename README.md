@@ -1,36 +1,38 @@
-># <div align="left">Lyric Look-Up</div>
->>### <div align="left">"Sing along to your favorite song"</div>
-
-<br></br>
-
-### <div align="center">Lyric Look-Up is a website that allows users to populate lyrics based on their Spotify Playlist.</div>
-
-![](/images/image1.png)
-
-### <div align="center"><https://mayorgak.github.io/project-1/></div>
-
-<div>
-(Images of api's/ sources evenly sized and distrbuted horizontally)
-<img src="images/spot2.png" width="100" ></img>
-</div>
+># **Lyric Look-Up**
+>>### *<div align="left">"Sing along to your favorite song"</div>*
+![](/images/screenshot.png)
 <br>
+*<div align="center">Lyric Look-Up is a webpage that populates lyrics based on users' personal Spotify playlist.</div>*
 
->## Tecnologies (Languages, Etc)**
->- Javascript
->- Etc.
+>## Installation
+1. Programing to install?
+2. 
 
 <br>
 
->## Scoope of functions/Documentaion of components
->-
+>## Usage
+1. Useful example of how our product is used
+
+2. Code block example?
+<br> 
+
+>## Development
+- Describe 
+-
 
 <br>
 
->## Project Status
+>## Contributions
+For questions about contributions please contact the lead project coordiantor.
+<br>
+
+Person's Name
+
+blank@gmail.com
+
 
 <br>
 
->> List of Possible subtitles?
->- contributors?
->- Liscence
->- Anything else?
+>## License
+- [MIT 2020](/assets/MitLicense.txt) &copy; 
+
