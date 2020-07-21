@@ -166,7 +166,7 @@ if (search) {
         try {
           spotifyClient.requestToken(response);
         } catch (error) {
-          toast(`Error: "${searchParams.get('error')}" when attemping to connect to Spotify.`, 'is-danger');
+          toast(`Error: "${error}" when attemping to connect to Spotify.`, 'is-danger');
         }
       }
     }
