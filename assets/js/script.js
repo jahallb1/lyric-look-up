@@ -2,6 +2,7 @@ const apiAddress = "";
 const apiKey = "";
 const apiArtist = "";
 let musicSearchEl = document.querySelector("#search-button");
+const musicContainer = document.querySelector(".lyrics-container");
 
 //  musicSearchEl.onclick = function (){
 //     getArtistApi();
@@ -26,7 +27,6 @@ function getArtistApi(event) {
     //let api = apiAddress + apiKey
     event.preventDefault();
     //let songTitle = document.getElementById("song").value;
-    console.log(songTitle);
     fetch("https://canarado-lyrics.p.rapidapi.com/lyrics/" + artistsAsString + "" + event.song.title, {
         "method": "GET",
         "headers": {
@@ -41,6 +41,15 @@ function getArtistApi(event) {
             })
         }
     })
+}
+
+function displayLyrics() {
+    let lyrics = data.content[i];
+
+    let lyricsEl = document.createElement("p");
+    lyricsEl.textContent = lyrics;
+    musicContainer.appendChild(lyricsEl);
+
 }
     
 
