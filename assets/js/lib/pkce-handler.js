@@ -178,7 +178,7 @@ class PkceHandler {
     body.append('code_verifier', providerState.codeVerifier);
     const req = {method: 'POST', body};
     const response = await fetch(c.tokenUrl, req);
-    if (!response.ok) throw new Error(response.statusText);
+    if (!response.ok) throw new Error(response);
     const data = await response.json();
     this._applyToken(data);
     setTimeout(() => {
@@ -196,7 +196,7 @@ class PkceHandler {
     body.append('client_id', this.providerConfig.clientId);
     const req = {method: 'POST', body};
     const response = await fetch(this.providerConfig.tokenUrl, req);
-    if (!response.ok) throw new Error(response.statusText);
+    if (!response.ok) throw new Error(response);
     const data = await response.json();
     this._applyToken(data);
   }
