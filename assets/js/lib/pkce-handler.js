@@ -47,6 +47,7 @@ class PkceHandler {
     const dataStashRaw = localStorage.getItem(storageKey);
     if (!dataStashRaw) return;
     this._dataStash = JSON.parse(dataStashRaw);
+    if (providerName && !this._dataStash[providerName]) return;
     const providerState = providerName ? this._dataStash[providerName] : this._dataStash;
     if (Object.keys(providerState).includes('accessToken')) {
       providerState.expiration = DateTime.fromISO(providerState.expiration);
