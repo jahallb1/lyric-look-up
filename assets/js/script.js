@@ -36,21 +36,10 @@ function getArtistApi(event) {
         if (response.ok) {
             response.json().then(function (data) {
                 document.querySelector('.lyrics-container').innerHTML = `<pre>${data.content[0].lyrics}</pre>`;
-                displayLyrics(data);
-            
-
             })
         }
     })
 }
 
-function displayLyrics(data) {
-    let lyrics = data.content[0].lyrics;
-
-    let lyricsEl = document.createElement("p");
-    lyricsEl.textContent = lyrics;
-    musicContainer.appendChild(lyricsEl);
-
-}
     
 
