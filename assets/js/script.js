@@ -1,7 +1,5 @@
-const apiAddress = "";
-const apiKey = "";
-const apiArtist = "";
-let musicSearchEl = document.querySelector("#search-button");
+// The music search function was no longer needed
+//let musicSearchEl = document.querySelector("#search-button");
 const musicContainer = document.querySelector(".lyrics-container");
 
 //  musicSearchEl.onclick = function (){
