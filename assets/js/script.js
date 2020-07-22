@@ -27,7 +27,7 @@ function getArtistApi(event) {
     //let api = apiAddress + apiKey
     event.preventDefault();
     //let songTitle = document.getElementById("song").value;
-    fetch("https://canarado-lyrics.p.rapidapi.com/lyrics/" + artistsAsString + "" + event.song.title, {
+    fetch("https://canarado-lyrics.p.rapidapi.com/lyrics/" + artistsAsString + "" + event.detail.track, {
         "method": "GET",
         "headers": {
             "x-rapidapi-host": "canarado-lyrics.p.rapidapi.com",
@@ -36,6 +36,7 @@ function getArtistApi(event) {
         if (response.ok) {
             response.json().then(function (data) {
                 console.log(data);
+                displayLyrics(data);
             
 
             })
@@ -43,8 +44,8 @@ function getArtistApi(event) {
     })
 }
 
-function displayLyrics() {
-    let lyrics = data.content[i];
+function displayLyrics(data) {
+    let lyrics = data.content[0].lyrics;
 
     let lyricsEl = document.createElement("p");
     lyricsEl.textContent = lyrics;
