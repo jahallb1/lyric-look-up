@@ -35,7 +35,7 @@ function getArtistApi(event) {
     .then(function(response) {
         if (response.ok) {
             response.json().then(function (data) {
-                console.log(data);
+                document.querySelector('.lyrics-container').innerHTML = `<pre>${data.content[0].lyrics}</pre>`;
                 displayLyrics(data);
             
 
