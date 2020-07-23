@@ -13,48 +13,52 @@
     <link rel="stylesheet" href="assets/css/styles.css" />
   </head>
   <body>
-    <!-- Hero -->
-    <div class="columns has-text-centered">
-      <div class="column is-8 is-offset-2">
-        <div class="box">
-          <p class="title is-1 is-spaced has-text-grey-darker">Lyric Look-up</p>
-          <p class="subtitle is-4 is-italic has-text-grey-darker">"Sing along to your favorite song"</p>
-          <div class="field is-grouped">
-            <a class="button is-warning" id="access-spotify">
-              <span class="icon mx-1">
-                <i class="fab fa-spotify"></i>
-              </span>
-              <span class="button-title"> Connect to Spotify </span>
-            </a>
+    <!-- Top tile -->
+    <section class="is-bold is-fullheight has-text-centered">
+      <div class="container is-ancestor column is-three-quarters-mobile is-mobile">
+        <div class="tile is-vertical is-parent">
+          <!-- <div class="column is-8 is-offset-2"> -->
+          <div class="tile is-child first-tile box">
+            <p class="title is-1 is-spaced has-text-grey-darker">Lyric Look-up</p>
+            <p class="subtitle is-4 is-italic has-text-grey-darker">"Sing along to your favorite song"</p>
+            <div class="field is-grouped is-three-quarters-mobile">
+              <a class="button is-warning" id="access-spotify">
+                <span class="icon mx-1">
+                  <i class="fab fa-spotify"></i>
+                </span>
+                <span class="button-title level is-mobile"> Connect to Spotify </span>
+              </a>
+            </div>
           </div>
-        </div>
 
-        <!-- Now playing -->
-        <div class="box now-playing is-hidden">
-          <figure class="image">
-            <img />
-          </figure>
-          <table class="table mx-3 is-size-6-touch">
-            <tbody>
-              <tr>
-                <th class="has-text-right">Artist(s):</th>
-                <td class="artist has-text-left"></td>
-              </tr>
-              <tr>
-                <th class="has-text-right">Album:</th>
-                <td class="album has-text-left"></td>
-              </tr>
-              <tr>
-                <th class="has-text-right">Track:</th>
-                <td class="track has-text-left"></td>
-              </tr>
-            </tbody>
-          </table>
+          <!-- Now playing  Tile -->
+          <div class="tile is-parent box now-playing is-three-quarters-mobile is-hidden">
+            <figure class="image responsive">
+              <img />
+            </figure>
+            <table class="table mx-3">
+              <tbody mobile>
+                <tr>
+                  <th class="has-text-right">Artist(s):</th>
+                  <td class="artist has-text-left"></td>
+                </tr>
+                <tr>
+                  <th class="has-text-right">Album:</th>
+                  <td class="album has-text-left"></td>
+                </tr>
+                <tr>
+                  <th class="has-text-right">Track:</th>
+                  <td class="track has-text-left"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Lyric Tile -->
+          <div class="tile is-parent box lyrics-container is-hidden"></div>
         </div>
-        <!-- Lyric container -->
-        <div class="box lyrics-container is-hidden"></div>
       </div>
-    </div>
+      <!-- </div> -->
+    </section>
     <script src="https://kit.fontawesome.com/08ffba74b7.js" crossorigin="anonymous"></script>
     <script src="./assets/js/script.js" async defer></script>
     <script src="./assets/js/spotify.js" async defer type="module"></script>
