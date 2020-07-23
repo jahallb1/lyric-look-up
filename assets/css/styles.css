@@ -11,12 +11,14 @@ body {
   background-position: center center ;
   font-family: 'Roboto', sans-serif;
   height: cover;
+  height: 100%;
+  overflow: scroll;
   
-  
+
 }
 
 .container {
-  width: 50%;
+  width: 40%;
   
 }
 
@@ -28,7 +30,7 @@ body {
 }
 
 figure.image.responsive {
-  width: 100%;
+  width: 50%;
 }
 
 
