@@ -24,6 +24,7 @@ const toast = (message, type, position = 'top-center', duration = 6000) =>
 
 const spotifyBtn = document.querySelector('#access-spotify');
 const nowPlayingDiv = document.querySelector('.now-playing');
+const lyricsContainer = document.querySelector('.lyrics-container');
 
 // module globals
 const NOW_PLAYING_EXCEPTIONS = Object.freeze({
@@ -95,8 +96,8 @@ async function streamCurrentTrackInfo(doTimeoutPoll = false) {
 window.spotifyClient = new PkceHandler(
   {
     clientId: 'dd7f3da7892d4f0b993617370f503172',
-    redirectUrl: 'https://mayorgak.github.io/project-1/',
-    //redirectUrl: 'http://127.0.0.1:5500/index.html',
+    // redirectUrl: 'https://mayorgak.github.io/project-1/',
+    redirectUrl: 'http://127.0.0.1:5500/index.html',
     authorizationUrl: 'https://accounts.spotify.com/authorize',
     tokenUrl: 'https://accounts.spotify.com/api/token',
     scope: 'user-read-playback-state',
@@ -140,12 +141,14 @@ document.body.addEventListener('trackChange', (event) => {
   nowPlayingDiv.querySelector('td.album').textContent = event.detail.album;
   nowPlayingDiv.querySelector('img').src = event.detail.albumArt;
   if (nowPlayingDiv.classList.contains('is-hidden')) nowPlayingDiv.classList.remove('is-hidden');
+  if (lyricsContainer.classList.contains('is-hidden')) lyricsContainer.classList.remove('is-hidden');
 });
 
 document.body.addEventListener('nowPlayingException', (event) => {
   if (event.detail.error !== 'sameTrack') {
     toast(`${NOW_PLAYING_EXCEPTIONS[event.detail.error]} Please Stand By.`, 'is-warning');
     if (!nowPlayingDiv.classList.contains('is-hidden')) nowPlayingDiv.classList.add('is-hidden');
+    if (!lyricsContainer.classList.contains('is-hidden')) lyricsContainer.classList.add('is-hidden');
   }
 });
 
