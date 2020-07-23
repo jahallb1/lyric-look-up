@@ -11,25 +11,24 @@ body {
   background-position: center center ;
   /* position: absolute; */
   font-family: 'Roboto', sans-serif;
+  height: cover;
+  
   
 }
 
 
-.box {
-  opacity: 0.9;
-  /* margin-top: 20%; */
+.container {
+  width: 50%;
 }
 
-/* .hero {
-  position: relative;
-  overflow: hidden;
-} */
+.box {
+  opacity: 0.9;
+  
+}
 
 
 .button {
   padding-right: 10%;
-  /* margin-left: 25%;
-  margin-right: 10%; */
   padding-left: 7%;
 
 
@@ -44,12 +43,15 @@ body {
 .now-playing figure {
   width: 24rem;
   border: 1px solid black;
+  opacity: 9;
 }
 
 
 .lyrics-container {
   display: flex;
   flex-direction: column;
+  opacity: .9;
+
   
 
 }
@@ -58,7 +60,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: white;
+  /* background-color: white; */
   opacity: .9;
   padding: 1rem;
 

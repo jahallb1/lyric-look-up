@@ -14,11 +14,11 @@
   </head>
   <body>
     <!-- Top tile -->
-    <section class=" is-bold is-fullheight has-text-centered has-text-center-mobile">
+    <section class=" is-bold is-fullheight has-text-centered is-mobile">
       <div class= "container is-ancestor is-size-1-mobile">
-      <div class=" tile is-vertical is-parent">
+      <div class=" tile is-vertical is-parent ">
           <!-- <div class="column is-8 is-offset-2"> -->
-            <div class="tile is-child  first-tile">
+            <div class="tile is-child  first-tile box">
               <p class="title is-1 is-spaced has-text-grey-darker">Lyric Look-up</p>
               <p class="subtitle is-4 is-italic has-text-grey-darker">"Sing along to your favorite song"</p>
               <div class="field is-grouped level item">
@@ -32,12 +32,12 @@
             </div>
 
       <!-- Now playing  Tile -->
-            <div class=" tile is-parent box now-playing is-hidden ">
+            <div class=" tile is-parent box now-playing is-hidden is-mobile ">
               <figure class="image">
                 <img />
               </figure>
               <table class="table is-fullwidth mx-3 ">
-                <tbody>
+                <tbody mobile>
                   <tr>
                     <th class="has-text-right">Artist(s):</th>
                     <td class="artist has-text-left"></td>
@@ -54,7 +54,7 @@
               </table>
             </div>
           <!-- Lyric container -->
-              <div class="tile is-parent lyrics-container ">
+              <div class="tile is-parent lyrics-container box is-mobile">
             </div>
           </div>
         </div>
