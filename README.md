@@ -19,8 +19,8 @@ Javascript, HTML, Bulma-desgin
 
 >## Usage
 <p>
-1. [https://mayorgak.github.io/project-1/](https://mayorgak.github.io/project-1/)
-2. Our program can pull lyrics for the songs from a users currently playing Spotify track.
+
+Our program can pull lyrics for the songs from a users currently playing Spotify track.
 </p>
 
 <br />
