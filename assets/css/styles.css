@@ -10,10 +10,6 @@ html {
   margin-top: 20%;
 }
 
-.hero {
-  position: relative;
-  overflow: hidden;
-}
 .has-background {
   position: absolute;
   object-position: center center;
@@ -26,7 +22,6 @@ html {
   margin-left: 30%;
   margin-right: 10%;
   padding-left: 7%;
-  
 }
 
 .now-playing {
@@ -46,4 +41,3 @@ html {
     flex-direction: row;
   }
 }
-
