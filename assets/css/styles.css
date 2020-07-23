@@ -31,14 +31,19 @@ html {
 
 .now-playing {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
+
 .now-playing figure {
-  width: 24rem;
+  width: 240px;
   border: 1px solid black;
 }
-.now-playing img {
-  opacity: 1;
+
+@media screen and (min-width: 768px) {
+  .now-playing {
+    flex-direction: row;
+  }
 }
 
