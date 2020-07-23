@@ -22,16 +22,15 @@ body {
 
 .box {
   opacity: 0.9;
-   /* min-width: fit-content; */
-  
-  
-  
-}
 
-image {
-  min-width: fit-content;
+
 
 }
+
+figure.image.responsive {
+  width: 100%;
+}
+
 
 .now-playing {
   display: flex;
