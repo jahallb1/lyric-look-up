@@ -9,6 +9,8 @@ body {
   background-position: center center;
   font-family: 'Roboto', sans-serif;
   height: cover;
+  height: 100%;
+  overflow: scroll;
 }
 
 .container {
@@ -20,7 +22,7 @@ body {
 }
 
 figure.image.responsive {
-  width: 100%;
+  width: 50%;
 }
 
 .now-playing {
@@ -54,6 +56,7 @@ figure.image.responsive {
   width: 240px;
   border: 1px solid black;
 }
+
 @media screen and (min-width: 768px) {
   .now-playing {
     flex-direction: row;
