@@ -38,7 +38,9 @@ let lastTrack;
 async function getCurrentTrackInfo() {
   let response;
   try {
-    response = await spotifyClient.fetch('https://api.spotify.com/v1/me/player/currently-playing');
+    response = await spotifyClient.fetch(
+      'https://api.spotify.com/v1/me/player/currently-playing'
+    );
   } catch (error) {
     toast(`Error: "${error}" when attemping to ask Spotify what's currently playing.`, 'is-danger');
   }
@@ -96,7 +98,7 @@ window.spotifyClient = new PkceHandler(
   {
     clientId: 'dd7f3da7892d4f0b993617370f503172',
     redirectUrl: 'https://mayorgak.github.io/project-1/',
-    //redirectUrl: 'http://127.0.0.1:5500/index.html',
+    redirectUrl: 'http://127.0.0.1:5500/index.html',
     authorizationUrl: 'https://accounts.spotify.com/authorize',
     tokenUrl: 'https://accounts.spotify.com/api/token',
     scope: 'user-read-playback-state',
