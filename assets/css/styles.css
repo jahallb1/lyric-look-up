@@ -9,28 +9,26 @@ body {
   background-image: url('../images/hero2.jpeg');
   background-size: cover;
   background-position: center center ;
-  /* position: absolute; */
   font-family: 'Roboto', sans-serif;
   height: cover;
   
   
 }
 
-
 .container {
   width: 50%;
+  
 }
 
 .box {
   opacity: 0.9;
   
+  
+  
 }
 
-
-.button {
-  padding-right: 10%;
-  padding-left: 7%;
-
+image {
+  min-width: fit-content;
 
 }
 
@@ -39,11 +37,6 @@ body {
   flex-direction: row;
   align-items: center;
 
-}
-.now-playing figure {
-  width: 24rem;
-  border: 1px solid black;
-  opacity: 9;
 }
 
 
@@ -60,9 +53,28 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* background-color: white; */
   opacity: .9;
   padding: 1rem;
 
 }
+
+.now-playing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.now-playing figure {
+  width: 240px;
+  border: 1px solid black;
+
+
+}
+@media screen and (min-width: 768px) {
+  .now-playing {
+    flex-direction: row;
+  }
+}
+
+
 
