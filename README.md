@@ -36,9 +36,9 @@ Josh Hall - JavaScript for Lyric API, Readme, Presentation
 
 ##  Screenshot
 Home screen
-[Site picture](https://github.com/Mayorgak/project-1/blob/master/assets/images/basic%20site%20lyric%20look-up.png?raw=true)
+
 Music Playing screen
-[Site in use picture](https://github.com/Mayorgak/project-1/blob/master/assets/images/with%20song%20playing%20lyric%20look-up.png?raw=true)
+
 
 
 ## License
